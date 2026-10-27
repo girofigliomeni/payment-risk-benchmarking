@@ -14,8 +14,9 @@
     "dev": "concurrently -k -n core,api,dashboard \"npm run dev -w @payment-risk/core\" \"npm run dev -w @payment-risk/api\" \"npm run dev -w @payment-risk/dashboard\"",
     "typecheck": "npm run build -w @payment-risk/core && npm run typecheck --workspaces",
     "lint": "eslint .",
-    "build": "npm run build -w @payment-risk/core && npm run build -w @payment-risk/api && npm run build -w @payment-risk/dashboard && npm run build -w @payment-risk/sdk",
-    "test": "vitest run"
+    "build": "npm run build -w @payment-risk/core && npm run build -w @payment-risk/api && npm run build -w @payment-risk/dashboard && npm run build -w @payment-risk/sdk && npm run build -w @payment-risk/simulator",
+    "test": "vitest run",
+    "simulate": "node packages/simulator/dist/cli.js"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

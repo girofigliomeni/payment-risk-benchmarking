@@ -29,6 +29,19 @@ export const PaymentEventSchema = z.discriminatedUnion('source', [
   z.object({ ...eventFields, source: z.literal('paypal_sandbox'), provenance: PayPalProvenanceSchema }).strict().readonly(),
 ]);
 export type PaymentEvent = z.infer<typeof PaymentEventSchema>;
+// Explicit allowlist: inference never receives dataset IDs, seeds, or generator metadata.
+export const ObservablePaymentEventSchema = z.object({
+  ...eventFields, source: z.enum(['synthetic', 'paypal_sandbox']),
+}).strict().readonly();
+export type ObservablePaymentEvent = z.infer<typeof ObservablePaymentEventSchema>;
+export function toObservablePaymentEvent(event: PaymentEvent): ObservablePaymentEvent {
+  return ObservablePaymentEventSchema.parse({
+    eventId: event.eventId, occurredAt: event.occurredAt, actorId: event.actorId,
+    amountMinor: event.amountMinor, currency: event.currency, eventType: event.eventType,
+    status: event.status, source: event.source,
+  });
+}
+
 // Evaluation records are stored separately and never supplied as detector input.
 export const ScenarioLabelSchema = z.object({
   eventId: z.string().min(1), scenarioTemplateId: z.string().min(1),
