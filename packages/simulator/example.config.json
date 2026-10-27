@@ -1,0 +1,23 @@
+{
+  "seed": 42,
+  "populationSize": 1000,
+  "durationSeconds": 604800,
+  "currency": "USD",
+  "scenarioMix": {
+    "normal": 60,
+    "deposit_velocity": 10,
+    "repeated_failures": 10,
+    "abrupt_amount_change": 10,
+    "unusual_withdrawal_timing": 10
+  },
+  "amountRanges": {
+    "deposit": {
+      "min": 100,
+      "max": 50000
+    },
+    "withdrawal": {
+      "min": 100,
+      "max": 50000
+    }
+  }
+}
