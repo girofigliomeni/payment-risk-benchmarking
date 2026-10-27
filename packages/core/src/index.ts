@@ -13,7 +13,7 @@ const SyntheticProvenanceSchema = z.object({
 }).strict().readonly();
 const PayPalProvenanceSchema = z.object({
   source: z.literal('paypal_sandbox'), providerOrderId: z.string().min(1),
-  providerEventId: z.string().min(1), verificationStatus: z.literal('verified'),
+  providerEventId: z.string().min(1), providerCaptureId: z.string().min(1).optional(), verificationStatus: z.literal('verified'),
   verifiedAt: z.iso.datetime(),
 }).strict().readonly();
 export const ProvenanceSchema = z.discriminatedUnion('source', [SyntheticProvenanceSchema, PayPalProvenanceSchema]);
@@ -69,3 +69,15 @@ export const DashboardEnvironmentSchema = z.object({
   VITE_API_BASE_URL: z.url().default('http://127.0.0.1:3001'),
 });
 
+
+// Browser-facing sandbox contracts contain neither credentials nor provider payloads.
+export const SandboxConfigurationSchema = z.object({
+  setupRequired: z.boolean(), missing: z.array(z.string()), source: z.literal('paypal_sandbox'),
+  amountMinor: z.number().int().positive(), currency: z.literal('USD'),
+}).strict();
+export const SandboxSessionSchema = z.object({
+  state: z.enum(['ready', 'approval_required', 'cancelled', 'verified']),
+  orderId: z.string().optional(), approvalUrl: z.url().optional(),
+  event: PaymentEventSchema.options[1].optional(), verifiedWebhookCount: z.number().int().nonnegative(),
+}).strict();
+export type SandboxSession = z.infer<typeof SandboxSessionSchema>;

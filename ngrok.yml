@@ -1,0 +1,5 @@
+version: "3"
+agent:
+  web_addr: false
+  inspect_db_size: -1
+  log: false
