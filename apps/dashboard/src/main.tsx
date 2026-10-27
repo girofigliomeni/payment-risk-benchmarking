@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { DashboardEnvironmentSchema, HealthSchema, PaymentEventSchema } from '@payment-risk/core';
 import fixture from '../../../packages/core/fixtures/sample-synthetic.json';
 import './style.css';
+import { Checkout } from './Checkout';
 const env = DashboardEnvironmentSchema.parse(import.meta.env);
 const sample = PaymentEventSchema.parse(fixture);
 function App() {
@@ -35,7 +36,8 @@ function App() {
       <p role="status" className={connection}>{connection === 'checking' ? 'Checking API?' : connection === 'connected' ? 'Connected ? API health is OK' : 'Connection error ? API health could not be verified. Start the API and check its configured address.'}</p>
       <p>Health is checked every five seconds.</p>
     </section>
-    <section aria-labelledby="experiments-title"><h2 id="experiments-title">Experiments</h2><p className="empty">No experiments yet.</p><p>This foundation has no experiment runner. No payment activity is connected.</p></section>
+    <section aria-labelledby="experiments-title"><h2 id="experiments-title">Experiments</h2><p className="empty">No experiments yet.</p><p>No experiment runner is connected. The test-only checkout below is separate from synthetic sample data.</p></section>
+    <Checkout />
     <section aria-labelledby="sample-title"><h2 id="sample-title">Synthetic sample data</h2><p>A checked-in, hand-authored example. This is not PayPal activity or a processed payment.</p>
       <dl><dt>Source</dt><dd>{sample.source}</dd><dt>Event</dt><dd>{sample.eventId}</dd><dt>Status</dt><dd>{sample.status}</dd><dt>Amount (minor units)</dt><dd>{sample.amountMinor} {sample.currency}</dd></dl>
       <details><summary>Inspect sample event and provenance</summary><pre>{JSON.stringify(sample, null, 2)}</pre></details>

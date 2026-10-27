@@ -9,3 +9,11 @@ dl { display: grid; grid-template-columns: minmax(100px, 180px) 1fr; gap: 8px 20
 summary { cursor: pointer; color: #245b96; } summary:focus-visible { outline: 3px solid #245b96; outline-offset: 4px; }
 pre { overflow: auto; background: #edf2f7; padding: 16px; font-size: .85rem; }
 @media (max-width: 500px) { main { padding: 24px 12px; } section { padding: 18px; } dl { grid-template-columns: 1fr; } dd { margin-bottom: 8px; } }
+
+button, input { font: inherit; padding: 8px 12px; border: 1px solid #7e93aa; border-radius: 4px; }
+button { color: white; background: #245b96; cursor: pointer; margin: 8px 12px 8px 0; }
+button:disabled { opacity: .6; cursor: wait; }
+label { display: block; font-weight: 600; }
+input { display: block; max-width: 100%; box-sizing: border-box; }
+button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid #245b96; outline-offset: 3px; }
+a { color: #245b96; }

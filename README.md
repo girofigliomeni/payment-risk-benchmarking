@@ -1,6 +1,6 @@
 # Payment Risk Lab
 
-A developer research workspace for reproducible payment-risk experiments. Phase 1 provides the monorepo foundation, shared validated contracts, API health, and a dashboard with explicitly synthetic sample data. Phase 2 adds a standalone, local synthetic simulator. No actual payments are executed.
+A developer research workspace for reproducible payment-risk experiments. Phase 1 provides the monorepo foundation, shared validated contracts, API health, and a dashboard with explicitly synthetic sample data. Phase 2 adds a standalone, local synthetic simulator. The simulator executes no actual payments. Phase 3 adds a separate, explicitly authorized PayPal sandbox test checkout; see the setup guide below.
 
 ## Local setup
 
@@ -126,3 +126,9 @@ Seed 42 produced 11862 events (9142 deposits, 2720 withdrawals), in 166 ms and 1
 Seed 43 produced 12164 events (9287 deposits, 2877 withdrawals) in 175 ms. Dataset hash: `638eed3379067db539c7586e649201263912f3fb0539d75cdf709a98600a1e9c`. Every saved record in all three runs passed shared-schema validation, label joins, chronological ordering, uniqueness, and file-hash checks. Runtime is a local observation, not a performance guarantee.
 
 Typecheck, lint, build, and all 34 tests passed. Build/test worker processes required running outside the Windows process-restricted sandbox; the build retained existing Zod dependency-comment warnings. Manual acceptance has not been claimed.
+
+## Phase 3: PayPal sandbox checkout
+
+See [PayPal sandbox setup and acceptance](docs/paypal-sandbox.md) for exact environment variables, hosted approval/capture, webhook registration, local exposure, API behavior, and process-local limitations. The browser checkout is test-only and remains separate from synthetic samples. Missing server configuration produces setup-required. Documentation-derived mock tests do not establish a genuine sandbox capture; external acceptance remains pending.
+
+For the local PayPal webhook tunnel on Windows: `npm run tunnel:install`, set `NGROK_AUTHTOKEN` in `.env` from [your ngrok dashboard](https://dashboard.ngrok.com/get-started/your-authtoken), then run `npm run tunnel:check` and `npm run tunnel` alongside the API. Register the assigned HTTPS forwarding URL plus `/sandbox/webhook` in PayPal. Never commit the token or binary.

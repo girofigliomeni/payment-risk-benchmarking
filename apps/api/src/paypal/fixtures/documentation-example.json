@@ -1,0 +1,19 @@
+{
+  "id": "WH-3F562076HD293871E-75F399086E414290U",
+  "event_type": "PAYMENT.CAPTURE.COMPLETED",
+  "resource": {
+    "id": "3Y662965014333303",
+    "status": "COMPLETED",
+    "amount": {
+      "value": "1.00",
+      "currency_code": "USD"
+    },
+    "create_time": "2024-05-16T05:19:15Z",
+    "final_capture": true,
+    "supplementary_data": {
+      "related_ids": {
+        "order_id": "9P99943869582473S"
+      }
+    }
+  }
+}

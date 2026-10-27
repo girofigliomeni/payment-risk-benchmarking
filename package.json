@@ -16,7 +16,10 @@
     "lint": "eslint .",
     "build": "npm run build -w @payment-risk/core && npm run build -w @payment-risk/api && npm run build -w @payment-risk/dashboard && npm run build -w @payment-risk/sdk && npm run build -w @payment-risk/simulator",
     "test": "vitest run",
-    "simulate": "node packages/simulator/dist/cli.js"
+    "simulate": "node packages/simulator/dist/cli.js",
+    "tunnel:install": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/install-ngrok.ps1",
+    "tunnel:check": "node scripts/ngrok.mjs --check",
+    "tunnel": "node scripts/ngrok.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
