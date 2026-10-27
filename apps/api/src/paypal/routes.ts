@@ -5,7 +5,7 @@ import { PaymentError } from './provider.js';
 import type { CheckoutService } from './service.js';
 
 const COOKIE = 'sandbox_session';
-function sessionId(request: Request): string {
+export function sessionId(request: Request): string {
   const value = request.headers.cookie?.split(';').map(part => part.trim()).find(part => part.startsWith(`${COOKIE}=`))?.slice(COOKIE.length + 1);
   if (!value || !/^[a-f0-9-]{36}$/.test(value)) throw new PaymentError(401, 'checkout_session_required');
   return value;
