@@ -42,7 +42,10 @@ export function Checkout() {
   async function act(path: string, body?: unknown) {
     setBusy(true); setError('');
     try { setSession(SandboxSessionSchema.parse(await request(path, body))); }
-    catch (error) { setError(error instanceof Error ? error.message : 'request_failed'); }
+    catch (error) {
+      if (error instanceof Error && error.message === 'checkout_session_required') setSession(undefined);
+      setError(error instanceof Error ? error.message : 'request_failed');
+    }
     finally { setAccessKey(''); setBusy(false); }
   }
   return <section aria-labelledby="checkout-title">
