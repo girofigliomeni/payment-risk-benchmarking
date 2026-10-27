@@ -13,8 +13,8 @@ create table public.events (
   source text not null check (source in ('synthetic','paypal_sandbox')), payload jsonb not null,
   primary key (experiment_id,event_id),
   check (payload->>'eventId' = event_id and payload->>'source' = source),
-  check (payload->'provenance'->>'source' = source),
-  check (source <> 'paypal_sandbox' or payload->'provenance'->>'verificationStatus' = 'verified')
+  check ((payload->'provenance'->>'source' = source) is true),
+  check (source <> 'paypal_sandbox' or (payload->'provenance'->>'verificationStatus' = 'verified') is true)
 );
 create table evaluation.labels (
   experiment_id uuid not null, event_id text not null,
@@ -87,7 +87,7 @@ begin
       end if;
       if experiment.sealed then raise exception 'experiment sealed' using errcode='23514'; end if;
       if item->>'source' = 'synthetic' and
-        (item->'provenance'->>'datasetId' <> experiment.dataset_id or (item->'provenance'->>'seed')::bigint <> experiment.seed) then
+        (item->'provenance'->>'datasetId' is distinct from experiment.dataset_id or (item->'provenance'->>'seed')::bigint is distinct from experiment.seed) then
         raise exception 'dataset mismatch' using errcode='23514';
       end if;
       insert into public.events values(p_experiment,item->>'eventId',item->>'source',item);

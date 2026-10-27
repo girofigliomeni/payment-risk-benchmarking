@@ -12,9 +12,23 @@ declare
   p jsonb := '{"eventId":"paypal_sandbox:capture:CAPTURE","actorId":"fictional-p","occurredAt":"2026-01-01T00:00:00Z","source":"paypal_sandbox","eventType":"capture","status":"completed","amountMinor":100,"currency":"USD","provenance":{"source":"paypal_sandbox","providerCaptureId":"CAPTURE","providerOrderId":"ORDER","providerEventId":"CAPTURE","verificationStatus":"verified","verifiedAt":"2026-01-01T00:00:00Z"}}';
   result jsonb;
   run jsonb := '{"version":"rules-v1","decisions":[{"eventId":"e1","detectorId":"rules","version":"rules-v1","score":0,"decision":"pass","reasons":[],"evidenceEventIds":["e1"]}]}';
+  invalid_event jsonb;
 begin
   perform public.lab_command(alice,a,'create','{"name":"A","datasetId":"dataset","seed":42}');
   perform public.lab_command(bob,b,'create','{"name":"B","datasetId":"dataset","seed":42}');
+  for invalid_event in select value from jsonb_array_elements(jsonb_build_array(
+    e - 'provenance',
+    jsonb_set(e,'{provenance}','null'),
+    e #- '{provenance,source}',
+    e #- '{provenance,datasetId}',
+    e #- '{provenance,seed}',
+    p #- '{provenance,verificationStatus}'
+  )) loop
+    begin
+      perform public.lab_command(alice,a,'ingest',jsonb_build_object('events',jsonb_build_array(invalid_event)));
+      raise exception 'missing provenance field accepted';
+    exception when check_violation then null; end;
+  end loop;
   perform public.lab_command(alice,a,'ingest',jsonb_build_object('events',jsonb_build_array(e,e)));
   perform public.lab_command(alice,a,'ingest',jsonb_build_object('events',jsonb_build_array(e)));
   if (select count(*) from public.events where experiment_id=a) <> 1 then raise exception 'duplicate ingestion'; end if;

@@ -21,6 +21,56 @@ The hand-designed development templates influenced these rules. This is a leakag
 
 Migration: `supabase/migrations/20261027182656_phase04_experiment_storage.sql`.
 
+Incremental hardening: `supabase/migrations/20261027194705_phase04_provenance_hardening.sql`.
+
+Final permission cleanup: `supabase/migrations/20261027200515_phase04_rls_auto_enable_permissions.sql` records the already-performed hosted revocation of `EXECUTE` on `public.rls_auto_enable()` from `PUBLIC`, `anon` and `authenticated`. Reapplying it is safe. If the optional managed function is absent, it does nothing. It preserves the function definition, identity, ownership, event trigger and all other grants; it does not use `CASCADE`. Isolated regression coverage checks absence, initial revocation, repeat application, effective browser permissions and preservation of other grants and trigger metadata. This file has not been applied to the hosted database by Codex.
+
+### Final cleanup acceptance status (2026-10-27)
+
+The user reports provenance hardening deployed and verified: both constraints validated, dataset/seed validation hardened, 39 events, RLS on all five public experiment tables, no direct anon/authenticated table privileges, and `rls_auto_enable()` execution revoked from the three restricted roles. The only reported advisor warning is leaked password protection disabled. These are user-provided hosted results, separate from local test evidence. The deployment instructions below are retained as the provenance-hardening procedure, not a request to repeat the deployment.
+
+No saved pre-deployment fingerprint output was found in repository files or local `artifacts`/`state` files during cleanup. Event count alone cannot establish content preservation. If the saved SQL Editor output is available elsewhere, compare every count and fingerprint from `supabase/tests/phase04-hosted-verification.sql` with that baseline while application writes are paused. Do not reconstruct a supposed pre-deployment baseline from current rows.
+
+For the remaining PayPal import retry acceptance:
+
+1. Keep the API process and the original checkout browser session running. Use the original hostname/origin (`http://127.0.0.1:5173` by default). Obtain the **existing imported experiment UUID** from prior acceptance evidence; do not run `artifacts/import-verified-browser.js`, which creates a new experiment.
+2. Confirm `GET /sandbox/session` with same-origin credentials still returns a verified sandbox event. If the cookie/session expired or the API restarted, stop and mark the browser retry pending; use persisted evidence for read-only inspection. Do not initiate another payment for this check.
+3. Obtain a valid **owning user's** `EXPERIMENT_ACCESS_TOKEN` locally through Supabase Auth (Authentication > Users identifies the test account; the sign-in procedure below uses its local credentials). Never use the service-role key or share tokens. Read `GET /experiments/<existing-id>` with that bearer token and record its `events.length` as the current total; record the existing event/reference counts in the SQL Editor.
+4. From the original browser origin, send `POST /sandbox/experiments/<existing-id>/verified` **twice**, each with `credentials: 'same-origin'`, `Authorization: Bearer <user token>`, `Content-Type: application/json` and body `{}`. Both must succeed and return the original total `eventCount`, including when the experiment is already sealed. Inspect the owned experiment again: the same event must retain `paypal_sandbox` and verified provenance. Event/reference counts must be unchanged, with one reference for that capture in that experiment.
+5. Send `POST /sandbox/experiments/<existing-id>/baseline` with the same headers, credentials and `{}` twice through the Vite proxy; compare complete returned decisions for equality. Confirm one stored detector run per version and one score per event/version. Retain the actual response/count evidence. This cleanup did not execute browser acceptance.
+
+The permission migration still needs a future user-authorized deployment to record migration history, even though the hosted ACL repair is already reported complete. Review a dry run before that deployment. Leaked password protection is a separate Supabase Auth dashboard configuration warning, not fixed by this SQL migration.
+
+The provenance-hardening migration replaces only `events_check1`, `events_check2` and the `lab_command` definition. Provenance source and sandbox verification checks require SQL true; synthetic dataset/seed comparisons use `IS DISTINCT FROM` to reject missing fields. It does not rewrite data, recreate tables, alter keys, change grants or change retry/count semantics. The function remains `SECURITY INVOKER` with an empty search path, the same signature and existing execution grants. Constraint validation scans existing events and briefly locks the table; schedule a quiet deployment window. The migration is transactional and fails rather than repairing incompatible records. Do not reapply or edit the original hosted migration.
+
+### Deploy provenance hardening (only after approval)
+
+On 2026-10-27, read-only hosted inspection found 39 events and zero violations of the intended provenance source, verification or synthetic dataset/seed checks. Hosted history contained only `20261027182656`. Recheck immediately before deployment; this snapshot is not deployment evidence.
+
+1. Pause API/CLI ingestion and baseline writes during the comparison. In the project SQL Editor, run `supabase/tests/phase04-hosted-verification.sql` and save the results locally. All three `invalid_*` counts must be zero; any query error (including malformed seeds) blocks deployment. The file returns counts and fingerprints, not event bodies or labels. It requires an administrative database role, never the scoring service role.
+2. Authenticate the CLI locally with `npx supabase login` if needed. Then run:
+
+```powershell
+npx supabase link --project-ref ymsbiagwhgxultjoryzf
+npx supabase migration list --linked
+npx supabase db push --linked --skip-vault --dry-run
+```
+
+The dry run must list **only** `20261027194705_phase04_provenance_hardening.sql`. Stop if it proposes the original migration or anything else; do not reset the database or repair migration history to force it through.
+
+3. After approval, apply and inspect history:
+
+```powershell
+npx supabase db push --linked --skip-vault
+npx supabase migration list --linked
+npx supabase db advisors --linked --type security
+```
+
+4. Rerun `supabase/tests/phase04-hosted-verification.sql` in the SQL Editor. Counts and fingerprints for all six tables must exactly match the saved results. Both constraints must be validated and include `IS TRUE`; `hardened_dataset` and `hardened_seed` must be true. `security_definer` must remain false, the search path empty, and execution grants unchanged (service role only among API roles). Both migration versions must appear in history. Review actual advisor results; do not assume a pass.
+5. Resume the API. With the existing verified checkout session, retry the same verified import twice: both responses must retain the existing total `eventCount`, with unchanged event/reference counts. Rerun the saved baseline twice and compare decisions; retain the prior browser/idempotency acceptance evidence. Do not initiate a fresh payment just to repeat this check. If the session expired, use read-only stored evidence and report the browser retry as pending.
+
+Do not run the fixture suites `phase04.sql` or `phase04-upgrade.sql` on the hosted project. `npm run test:storage` runs them in isolated PostgreSQL and checks upgrade data preservation plus function owner/grant preservation.
+
 - `public.experiments`: UUID, authenticated owner, name, immutable dataset ID/seed, sealing state, creation timestamp.
 - `public.events`: composite experiment/event identity, explicit source and validated minimal normalized event JSON, including provenance.
 - `evaluation.labels`: separate evaluation-only labels, template and split, joined by composite experiment/event foreign key. The browser and API service role have **no access**, including SELECT. This phase provides the restricted schema; it provides no label import/read route. Original simulator labels remain in their separate local file. A database administrator can load evaluation records separately; detectors cannot.

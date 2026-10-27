@@ -11,11 +11,13 @@ const IngestionSchema = z.object({ events: z.array(PaymentEventSchema.options[0]
 export function experimentRouter(store: ExperimentStore | undefined, checkout: CheckoutService) {
   const router = express.Router();
   let windowStart = Date.now();
-  let requests = 0;
+  const requests = new Map<string | undefined, number>();
   router.use(async (request, response, next) => {
     response.set('Cache-Control', 'no-store');
-    if (Date.now() - windowStart >= 60000) { windowStart = Date.now(); requests = 0; }
-    if (++requests > 120) throw new PaymentError(429, 'experiment_rate_limited');
+    if (Date.now() - windowStart >= 60000) { windowStart = Date.now(); requests.clear(); }
+    const count = (requests.get(request.ip) ?? 0) + 1;
+    requests.set(request.ip, count);
+    if (count > 120) throw new PaymentError(429, 'experiment_rate_limited');
     if (!store) throw new PaymentError(503, 'experiment_setup_required');
     const authorization = request.get('authorization') ?? '';
     if (!/^Bearer [^\s]{1,8192}$/.test(authorization)) throw new PaymentError(401, 'experiment_auth_required');

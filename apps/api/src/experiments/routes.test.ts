@@ -1,4 +1,5 @@
 import { createServer } from 'node:http';
+import express from 'express';
 import { expect, it, vi } from 'vitest';
 import { createApp } from '../app.js';
 import { PaymentError } from '../paypal/provider.js';
@@ -11,6 +12,28 @@ const owner = '22222222-2222-4222-8222-222222222222';
 const event = { eventId: 'e1', actorId: 'fictional-a', occurredAt: '2026-01-01T00:00:00Z', source: 'synthetic',
   eventType: 'deposit', amountMinor: 100, currency: 'USD', status: 'completed',
   provenance: { source: 'synthetic', datasetId: 'dataset', seed: 42, generatorVersion: 'synthetic-v1' } };
+it('limits each client to 120 requests and clears all client counts after 60 seconds', async () => {
+  let client = '192.0.2.1';
+  let now = 0;
+  const ip = vi.spyOn(express.request, 'ip', 'get').mockImplementation(() => client);
+  const clock = vi.spyOn(Date, 'now').mockImplementation(() => now);
+  const store = { owner: vi.fn().mockResolvedValue(owner), command: vi.fn().mockResolvedValue({}) };
+  try {
+    await withApi(store, async post => {
+      const send = () => post(`/experiments/${id}/events`, { events: [event] });
+      for (let n = 0; n < 120; n++) expect((await send()).status).toBe(200);
+      expect((await send()).status).toBe(429);
+      client = '192.0.2.2';
+      for (let n = 0; n < 120; n++) expect((await send()).status).toBe(200);
+      now = 59999;
+      expect((await send()).status).toBe(429);
+      now = 60000;
+      expect((await send()).status).toBe(200);
+      client = '192.0.2.1';
+      expect((await send()).status).toBe(200);
+    });
+  } finally { ip.mockRestore(); clock.mockRestore(); }
+});
 async function withApi(store: ExperimentStore | undefined, test: (post: (path: string, body: unknown, token?: string) => Promise<Response>) => Promise<void>) {
   const server = createServer(createApp(undefined, store));
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));

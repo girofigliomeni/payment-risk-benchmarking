@@ -22,7 +22,8 @@ async function main() {
     const response = await fetch(new URL(`/experiments${path}`, base), { method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(60000) });
     if (!response.ok) throw new Error(`Experiment request failed (${response.status}); check server setup, ownership and immutable dataset constraints`);
-    return response.json();
+    try { return await response.json(); }
+    catch { throw new Error('Invalid experiment response'); }
   }
   if (values.events !== undefined) {
     if (!values.events) throw new Error('--events requires a path');
@@ -35,6 +36,12 @@ async function main() {
     await post('', { experimentId: id, name: values.name ?? 'Saved seeded experiment', datasetId: first.provenance.datasetId, seed: first.provenance.seed });
     for (let start = 0; start < events.length; start += 500) await post(`/${id}/events`, { events: events.slice(start, start + 500) });
   }
-  console.log(JSON.stringify(SavedRunSchema.parse(await post(`/${id}/baseline`, {})), null, 2));
+  const run = SavedRunSchema.safeParse(await post(`/${id}/baseline`, {}));
+  if (!run.success) throw new Error('Invalid experiment response');
+  console.log(JSON.stringify(run.data, null, 2));
 }
-main().catch(() => { console.error('Baseline failed. Check arguments, saved synthetic file, authentication and server/database configuration. No payment was initiated.'); process.exitCode = 1; });
+main().catch((error: unknown) => {
+  const detail = error instanceof Error ? error.message : 'Unknown error';
+  console.error(`Baseline failed: ${detail}. Check arguments, saved synthetic file, authentication and server/database configuration. No payment was initiated.`);
+  process.exitCode = 1;
+});

@@ -7,7 +7,32 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import { createApp } from '../app.js';
+import { PaymentError } from '../paypal/provider.js';
 import type { ExperimentStore } from './store.js';
+
+it('CLI reports request failure details without tokens or response bodies', async () => {
+  const server = createServer(createApp(undefined, {
+    owner: async () => { throw new PaymentError(401, 'private-response-body'); },
+    command: async () => ({}),
+  }));
+  await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const address = server.address();
+    if (!address || typeof address === 'string') throw new Error('address required');
+    const cli = fileURLToPath(new URL('../../dist/experiments/cli.js', import.meta.url));
+    await expect(promisify(execFile)(process.execPath, [cli, '--experiment', '11111111-1111-4111-8111-111111111111'], {
+      env: { ...process.env, EXPERIMENT_ACCESS_TOKEN: 'private-user-token', EXPERIMENT_API_URL: `http://127.0.0.1:${address.port}` },
+    })).rejects.toMatchObject({ code: 1, stdout: '', stderr: expect.stringContaining('Experiment request failed (401)') });
+    try {
+      await promisify(execFile)(process.execPath, [cli, '--experiment', '11111111-1111-4111-8111-111111111111'], {
+        env: { ...process.env, EXPERIMENT_ACCESS_TOKEN: 'private-user-token', EXPERIMENT_API_URL: `http://127.0.0.1:${address.port}` },
+      });
+    } catch (error) {
+      expect(error).toHaveProperty('stderr', expect.stringContaining('No payment was initiated.'));
+      expect(error).toHaveProperty('stderr', expect.not.stringMatching(/private-user-token|private-response-body/));
+    }
+  } finally { await new Promise<void>(resolve => server.close(() => resolve())); }
+});
 
 it('CLI imports a saved seeded file and repeats identical scoring without reading labels', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'payment-risk-baseline-'));
