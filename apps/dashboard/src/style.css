@@ -1,0 +1,11 @@
+:root { font-family: 'Segoe UI', sans-serif; color: #25364a; background: #edf2f7; line-height: 1.6; }
+body { margin: 0; } main { max-width: 960px; margin: 0 auto; padding: 40px 24px; }
+header { border-left: 6px solid #245b96; padding-left: 24px; margin-bottom: 36px; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); letter-spacing: -.04em; line-height: 1.15; margin: 0; }
+h2 { font-size: 1.25rem; margin-top: 0; } p { max-width: 72ch; }
+section { background: #fff; padding: 24px; margin: 20px 0; border: 1px solid #ccd7e3; border-radius: 6px; }
+.connected { color: #1c633f; } .error { color: #a12828; } .empty { font-size: 1.6rem; margin-bottom: 0; }
+dl { display: grid; grid-template-columns: minmax(100px, 180px) 1fr; gap: 8px 20px; } dt { font-weight: 600; } dd { margin: 0; overflow-wrap: anywhere; }
+summary { cursor: pointer; color: #245b96; } summary:focus-visible { outline: 3px solid #245b96; outline-offset: 4px; }
+pre { overflow: auto; background: #edf2f7; padding: 16px; font-size: .85rem; }
+@media (max-width: 500px) { main { padding: 24px 12px; } section { padding: 18px; } dl { grid-template-columns: 1fr; } dd { margin-bottom: 8px; } }

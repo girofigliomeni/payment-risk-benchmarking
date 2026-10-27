@@ -1,0 +1,16 @@
+{
+  "eventId": "sample-event-001",
+  "occurredAt": "2026-01-01T00:00:00.000Z",
+  "actorId": "fictional-actor-001",
+  "source": "synthetic",
+  "eventType": "deposit",
+  "amountMinor": 1250,
+  "currency": "USD",
+  "status": "pending",
+  "provenance": {
+    "source": "synthetic",
+    "datasetId": "sample-data-only",
+    "generatorVersion": "hand-authored-fixture-v1",
+    "seed": 1
+  }
+}
