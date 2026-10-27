@@ -1,9 +1,23 @@
-import { execFileSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
+
+it.each([['--config', ''], ['--config=']])('rejects an empty config operand: %j', (...args) => {
+  const directory = mkdtempSync(join(tmpdir(), 'payment-risk-simulator-'));
+  const output = join(directory, 'output');
+  const cli = fileURLToPath(new URL('../dist/cli.js', import.meta.url));
+  try {
+    const result = spawnSync(process.execPath, [cli, ...args, '--out', output], { encoding: 'utf8' });
+    expect(result.status).toBe(1);
+    expect(result.stderr.trim()).toBe('--config requires a nonempty path');
+    expect(existsSync(output)).toBe(false);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
 
 it('CLI writes reproducible separate files and refuses overwrite or invalid input', () => {
   const directory = mkdtempSync(join(tmpdir(), 'payment-risk-simulator-'));

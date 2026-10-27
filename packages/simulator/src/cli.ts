@@ -14,7 +14,8 @@ async function main() {
     return;
   }
   let config: Record<string, unknown> = {};
-  if (values.config) {
+  if (values.config !== undefined) {
+    if (values.config.length === 0) throw new Error('--config requires a nonempty path');
     const parsed: unknown = JSON.parse(await readFile(resolve(values.config), 'utf8'));
     if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('Config must be a JSON object');
     config = { ...parsed };
