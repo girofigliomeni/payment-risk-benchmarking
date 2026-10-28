@@ -1,3 +1,15 @@
+# Responsible Gambling Payment Protection
+
+This project is pivoting to an opt-in consumer spending dashboard plus a developer API/SDK for enforcing user-defined protections in participating payment flows. The protected demonstration will remain a generic PayPal sandbox purchase; gambling-related scenarios are explicitly synthetic.
+
+**Documentation proposal only:** the consumer product, policy engine, warnings and SDK client are not implemented yet. Phases 1–4 remain the existing foundation, with their acceptance records and pending checks preserved. See the [updated project specification](docs/project-doc.md), [architecture/data model](docs/protection-architecture.md), [consumer dashboard](docs/consumer-dashboard.md), [developer SDK/API](docs/developer-sdk.md), [evaluation methodology](docs/evaluation-methodology.md), [PayPal constraints](docs/paypal-constraints.md) and [Phase 5–12 roadmap](docs/roadmap.md). Implementation waits for approval of Phase 5.
+
+Current implementation: seeded simulator, pure rules-v1 research baseline, authorized experiment persistence and process-local sandbox checkout. Future protection-policy-v1 remains separate from rules-v1. The SDK currently exports types only. No real-world gambling history, universal PayPal blocking or clinically validated harm prevention is claimed.
+
+The following content is retained verbatim as historical Phase 1–4 setup and verification documentation. Statements such as “no database routes” and “credentials are unused” refer to the named historical phase, not the complete current repository. For current storage/checkout setup follow [rules-storage.md](docs/rules-storage.md) and [paypal-sandbox.md](docs/paypal-sandbox.md). Historical acceptance status is not changed by this pivot.
+
+---
+
 # Payment Risk Lab
 
 Phase 4 adds the deterministic rules baseline, authorized experiment API, server-only Supabase persistence and saved-experiment CLI. See [rules, database setup and acceptance](docs/rules-storage.md). Hosted Supabase and browser acceptance require user configuration; local test results do not establish real-world detection performance.

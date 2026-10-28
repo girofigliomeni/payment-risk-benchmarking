@@ -1,31 +1,37 @@
-# Phase 6 — Benchmarking and research results
+﻿# Phase 6: Consent, policy persistence and authorization
 
-**Goal.** Produce defensible comparisons between rules, AI, and hybrid detectors on held-out synthetic experiments.
+Status: proposed, unimplemented. Requires user acceptance of Phase 5 before implementation. Build only this phase, then stop.
 
-## Build
+## Goal
 
-- Create train/development/test splits with disjoint seeds and scenario variants; store split manifests and dataset hashes.
-- Lock model prompts, rule thresholds, and hybrid fusion before evaluating held-out test data.
-- Compute TP/FP/TN/FN, precision, recall, F1, false-positive rate, support, and detection latency when event-level timestamps permit it. Handle zero denominators explicitly.
-- Include per-scenario results, sample counts, cost/latency of AI, failure rates, and limitations.
-- Persist immutable evaluation run manifests: dataset hash, code version, model version, thresholds, prompt version, run time, and outputs.
-- Export JSON and Markdown research summary generated from actual stored results, with no fabricated numbers.
+Persist consumer-controlled policy and consent safely; no payment dispatch.
 
-## Constraints
+Read [project](../project-doc.md), [architecture](../protection-architecture.md), [consumer policy](../consumer-dashboard.md), [SDK/API](../developer-sdk.md), [evaluation](../evaluation-methodology.md) and [PayPal constraints](../paypal-constraints.md) as relevant. These linked documents define the shared contracts.
 
-- Ground truth used only by evaluation after detector outputs are frozen.
-- Do not select best model on held-out test set and then report the same set as unbiased confirmation.
-- No performance claim without measured data and denominators. Synthetic results do not establish real-world accuracy.
-- Explicitly distinguish simulation anomalies from legally or clinically meaningful harm labels.
+## Scope
 
-## Codex checks
+- Add versioned additive migrations for subjects, consent, policy versions/change requests, integration clients/links and minimal audit; never rewrite Phase 4 migrations/data.
+- Implement consumer authentication/recent-auth checks, owner/integration scopes, policy edits with expectedVersion and idempotency, immediate tightening/revocation and due relaxation evaluation under a subject lock.
+- Provide operator-only sandbox integration provisioning and consumer-approved expiring link invitations; implement bounded policy/consent reads without browser table grants.
+- Specify and test minimal export/deletion lifecycle records and retention exclusions for unresolved operations; optional AI consent remains independent.
 
-Hand-calculate a tiny confusion matrix and compare outputs; test zero positives, zero predictions, missing events, and split leakage; rerun fixed seed and compare deterministic portions. Report exact sample sizes and any nonreproducible AI variance.
+## Acceptance and automated tests
 
-## My acceptance check
+- Two users and two integrations cannot read/mutate each other's policies or links; altered owner IDs never establish authority. Browser direct table/RPC access denied.
+- Concurrent mixed policy edits, revocation, resubmission and pending cancellation serialize correctly; duplicate payloads replay, changed-key payloads conflict.
+- Isolated migration/upgrade checks preserve existing experiment data, grants, labels and rules runs. Missing service configuration yields explicit unavailable.
+- Run npm run typecheck, npm run lint, npm run build, then npm test and any phase-specific storage/concurrency/contract checks above. Report commands/results and blockers truthfully. Do not weaken existing tests.
 
-Run the benchmark on a fixed dataset, inspect false positives and missed cases, confirm the report cites actual stored results, and verify the methodology explains synthetic limitations. A worse-than-rules AI result is acceptable.
+## Deliverables
 
-## Not in this phase
+Additive migrations, authorized consent/policy/link routes, access tests and human setup/retention guide.
 
-Marketing claims, production fraud certification, dashboard redesign.
+## User acceptance
+
+Configure test Auth users through Supabase Authentication > Users using existing documented server variables locally; verify two-user isolation and policy history. Review a migration dry run before any authorized hosted application. Do not request secrets in chat.
+
+## Out of scope
+
+Budget reservation, PayPal calls, AI warnings and polished dashboard.
+
+Preserve Phases 1–4 acceptance records and implementations. No following-phase work until explicit acceptance. Local mocks do not establish external-account or browser acceptance.
