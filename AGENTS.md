@@ -1,37 +1,36 @@
-# Payment Risk Lab
+﻿# Responsible Gambling Payment Protection
 
-A developer platform for reproducible payment-risk experiments. The product reasoning lives in `docs/project-doc.md`. This file is the permanent operating contract for Codex.
+An opt-in consumer dashboard and developer enforcement API/SDK built on the preserved Payment Risk Lab foundation. Product authority lives in docs/project-doc.md and its linked architecture, consumer, SDK, evaluation and roadmap specifications.
 
 ## How we work
 
-Spec-driven. Read this file, the relevant sections of `docs/project-doc.md`, and only the current `docs/specs/phase-NN.md`. Build that phase and stop. Do not implement future phases or quietly expand scope. If resuming without context, inspect the specs and git log; never assume a phase passed because code exists.
+Spec-driven. Before implementation read this file, relevant product sections and only the current docs/specs/phase-NN.md. The documentation pivot reads all phases by explicit request. Preserve Phases 1–4 source, migrations, tests and historical acceptance evidence. Never infer acceptance from code or erase pending checks. docs/history contains superseded plans, not current instructions.
 
-Before implementing, identify a genuine ambiguity only if it blocks progress. Ask one specific question, include your recommended answer and reason, then stop. Do not invent missing secrets, accounts, webhook payloads, transaction results, metrics, or deployment URLs.
+Phases 5–12 are proposals, not implemented or authorized. Wait for user approval before Phase 5. Implement only the approved phase, then stop for user acceptance before the next. Prewritten future specs are planning artifacts, not authorization. Inspect specs and git log when resuming.
 
-After implementation run typecheck, lint, build, and relevant automated tests. Report failures truthfully. Browser, PayPal dashboard, external-account, and human-judgment acceptance checks belong to the user; never report them as passed without evidence. Give a short report: behavior built, commands and results, blockers, exact manual checks. Do not create a new phase until the user accepts the previous one.
+If a genuine ambiguity blocks implementation, ask one specific question with a recommended answer and reason, then stop. Never invent secrets, accounts, webhook payloads, payment results, metrics or deployment URLs. Documentation work does not authorize external payments, account configuration or deployments.
+
+After implementation run typecheck, lint, build and relevant automated tests. Documentation-only changes run consistency checks and git diff --check; state application checks were not run when appropriate. Report behavior, commands/results, blockers and exact manual checks. Browser, PayPal dashboard, external-account and human acceptance remain user checks unless actual evidence exists. Preserve dates and attribution.
 
 ## Stack
 
-TypeScript strict, Node.js, React + Vite, Express, npm workspaces, Zod, Vitest, Supabase PostgreSQL, PayPal sandbox Orders API, OpenAI API, Render backend, Vercel frontend. Use stable compatible package versions. Avoid unnecessary frameworks. An API contract and typed SDK are deliverables, not prerequisites to every phase.
+TypeScript strict, Node.js, React + Vite, Express, npm workspaces, Zod, Vitest, Supabase PostgreSQL, PayPal sandbox Orders API, OpenAI API, Render backend, Vercel frontend. Keep repository/package identifiers unless explicitly approved. API contracts and a typed SDK are future deliverables, not prerequisites to every phase. Ask before major unplanned dependencies or provider changes.
 
 ## Architecture invariants
 
-- Synthetic data and PayPal-verified sandbox events are distinct types with immutable provenance. Never label simulated data as real PayPal activity.
-- The simulator is deterministic under a seed, with virtual timestamps. No network, database, or model calls in its core.
-- The risk rules and metric calculations are pure functions; their outputs can be independently verified.
-- Ground truth is hidden from detectors at inference time. Train/tune and test data are separated by scenario templates and seeds. Report leakage risks.
-- AI may classify/analyze or explain; it must not manufacture evidence, alter labels, initiate payments, or make irreversible financial decisions.
-- No live-money wagering, casino operation, personalized slot odds, or player-targeted exploitation. Use fictional identities and sandbox accounts only.
-- PayPal secrets and database privileged credentials stay on the server. Never log access tokens, secrets, full payment payloads, or personal payment data.
-- Payment captures require explicit user approval, verified server-side order state, idempotency, and authenticated webhook handling. No fake success state.
-- Monetary values use integer minor units or precise decimal strings, never floating-point arithmetic for settlement.
-- Do not treat PayPal sandbox as a source of historical gambling transactions, and do not imply production gambling payment approval.
-- Store minimal data. Limit and authorize all API reads/writes. Migrations are versioned. Never expose privileged database keys to browsers.
+- Opt-in enforcement covers only authenticated enrolled users in participating flows. Never imply universal history access, bank/account blocking or authority over unrelated payments. Fictional identities and sandbox accounts only; no live wagering, casino operation, player exploitation or assumed production gambling approval.
+- Version consent and policies. Tightening applies immediately; relaxation waits the specified delay. Revocation stops optional processing and new protected checkout, never silently converts to unprotected payment. Merchants and AI cannot modify consumer policy.
+- Preserve rules-v1 as a pure research baseline. protection-policy-v1 is a separate pure deterministic engine. AI only provides evidence-linked behavioral warnings: no freezing funds, payment initiation/capture/refund, policy changes or eligibility decisions.
+- Keep immutable synthetic and verified sandbox provenance separate. Synthetic gambling scenarios are not PayPal activity; generic sandbox purchases are not verified gambling. Never pool their budget ledgers. Real-world history is outside MVP scope.
+- Simulator core uses seed and virtual time with no network, database or model calls. Hide ground truth/scenario metadata at inference; hold out templates, seeds and actor streams. Report leakage and synthetic limitations; never claim clinically validated harm prevention.
+- Enforce server-side with atomic database reservations and concurrency protection across all applicable budgets. Persist intent, idempotency and provider correlation before external calls. Process-local locks do not suffice. Keep uncertain payments reserved until verified reconciliation.
+- Explicit user approval and verified order state precede capture. Serialize policy changes and capture authorization at the documented database linearization point. Verify every webhook and deduplicate captures durably. Fail closed for new capture when authority/storage is unavailable. AI failure never changes policy eligibility.
+- Use integer minor units or precise decimal strings, never floating-point settlement/FX. Reservations allocate budget, not consumer funds.
+- Keep PayPal secrets, privileged database credentials and integrator keys server-side. Never log tokens, secrets, full payment payloads or personal payment data. Bound and authorize all reads/writes. Version migrations, enforce owner/integrator isolation and least privilege. Labels stay inaccessible to scoring.
+- Store minimal data with explicit retention/export/deletion controls. No behavioral marketing or merchant profiling. Separate optional AI consent from protection enrollment.
 
-## Conventions
+## Conventions and communication
 
-Strict types; no `any` without documented justification. Comments explain decisions, not syntax. One obvious implementation beats elaborate abstraction. Prefer small, deterministic tests. Do not weaken tests to make them pass. No hidden fallbacks. Document environment variables in `.env.example`, never commit `.env` files. Ask before installing major unplanned dependencies or changing providers.
+Strict types; no any without documented justification. Prefer small deterministic tests and one obvious implementation. Comments explain decisions. Never weaken tests or add hidden fallbacks. Do not edit historical migrations. Document new environment variables in .env.example only when implementation requires them; never commit .env files.
 
-## Communication
-
-Be concise and precise. When a human must configure a service, give the exact variable name, the dashboard where it comes from, and the next verification step, then stop at that blocker. Never ask the user to paste secrets into chat. Treat missing external access as a blocker, not a reason to simulate a successful integration.
+Be concise. Human configuration instructions identify the exact variable, dashboard and next verification step, then stop at that blocker. Never request secrets in chat. Missing external access is a blocker, not a simulated success.

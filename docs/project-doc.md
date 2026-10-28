@@ -1,67 +1,42 @@
-# Payment Risk Lab
+﻿# Responsible Gambling Payment Protection
 
-The product decisions behind this build. Read the relevant section before each phase. The reasons matter because they decide how to handle forks not explicitly specified.
+Status: documentation proposal, 2026-10-27. Phases 5–12 are unimplemented and require phase-by-phase approval. Repository/package identifiers remain unchanged.
 
-## What it is
+## Objective
 
-A developer-facing experimentation platform for testing payment-risk detection systems against reproducible synthetic payment activity, with a separate PayPal sandbox integration that demonstrates how verified payment lifecycle events enter the same normalized event pipeline. Developers compare a rules baseline, an AI-assisted detector, and a hybrid detector through an API, dashboard, and typed TypeScript SDK.
+An opt-in consumer dashboard provides visibility into gambling-related spending recorded by participating flows, self-selected budgets, behavioral early warnings and cooling-off controls. A backend API and TypeScript SDK let participating developers enforce those protections before initiating payment capture.
 
-## The research question
+The hackathon product uses fictional identities, synthetic gambling scenarios and a protected **generic PayPal sandbox test purchase**. It does not operate gambling, process live money or diagnose gambling harm. Protection means declining to initiate an integrated checkout under an enrolled user's deterministic policy. It does not mean freezing PayPal funds, controlling unrelated merchants or seeing a consumer's entire financial history. A merchant can bypass this integration outside our authority; disclose that limitation.
 
-Can an AI-assisted or hybrid detector improve on a deterministic rules baseline for specified synthetic payment-risk scenarios, measured on held-out simulations? We do not assume the answer is yes. Negative results and false positives are findings. This is a controlled benchmark, not a validated real-world fraud product.
+Success is demonstrable policy correctness and evidence-linked warnings on explicit test cases. No clinical harm-prevention, comprehensive coverage or production compliance claim follows from this demo.
 
-## Who it is for
+## Preserved foundation
 
-Developers, payment-integrations engineers, and researchers who need to test risk logic before using real transaction data. Gambling-like deposits and withdrawals are synthetic event categories, not real wagers or casino payments.
+Phases [1](specs/phase-01.md), [2](specs/phase-02.md), [3](specs/phase-03.md) and [4](specs/phase-04.md), their implementations, tests and migrations remain unchanged. The pivot treats them as the completed foundation; existing records still contain pending human checks. This proposal does not resolve those checks or retroactively certify acceptance. Preserve [rules/storage evidence](rules-storage.md), [sandbox setup and evidence](paypal-sandbox.md), and README historical verification sections.
 
-## The rule everything rests on
+Current architecture: React/Vite apps/dashboard shows health, synthetic sample evidence and checkout; Express apps/api mounts health, sandbox and owned experiment routes; packages/core holds Zod contracts and pure rules-v1; packages/simulator generates deterministic local files; packages/sdk exports types only. Supabase experiment storage is server-mediated with restricted evaluation labels. Checkout sessions, locks and webhook deduplication are process-local, **not durable protection enforcement**.
 
-**Evidence and provenance before model output.** Each observation is traceable to either a reproducible synthetic event or a verified PayPal sandbox event. A model can analyze evidence, but cannot invent it. Labels for synthetic scenarios are ground truth for evaluation only and never shown to detectors while scoring.
+The [history index](history/README.md) preserves the previous objective and superseded future phases. Keep rules-v1 thresholds, outputs, labels and experiment records unchanged. Its flag/pass result remains a research signal. The separate protection-policy-v1 engine evaluates consent, budgets and cooling-off; the behavioral warning service remains advisory. Separate types, versions, storage and UI prevent interchange.
 
-## Why PayPal is central
+## Proposed specifications
 
-The platform demonstrates a genuine sandbox checkout: create an order, approve, capture, verify the payment state, and process verified webhooks. These events are normalized into the same schema the risk detectors consume. The bulk simulation does not make thousands of PayPal API calls; it produces clearly marked synthetic data. A demo shows a verified sandbox event passing through ingestion and analysis. The experiment results never imply that PayPal endorses gambling activity or that synthetic events came from PayPal.
+- [Architecture and data model](protection-architecture.md): server authority, atomic reservations, race semantics and reconciliation.
+- [Consumer dashboard](consumer-dashboard.md): consent, policy defaults, privacy and UI.
+- [API and developer SDK](developer-sdk.md): authenticated boundaries and protected integration.
+- [Evaluation](evaluation-methodology.md): warning quality, policy correctness, latency and cost.
+- [PayPal constraints](paypal-constraints.md): official sources and product implications.
+- [Roadmap](roadmap.md): implementation order and unresolved decisions.
 
-## Scope
+Keep TypeScript strict, Node.js, React + Vite, Express, npm workspaces, Zod, Vitest, Supabase PostgreSQL, PayPal sandbox Orders API, OpenAI API, Render backend and Vercel frontend. Extend existing workspaces without a new framework/provider. OpenAPI 3.1 and a real typed client are future deliverables.
 
-- Seeded, deterministic simulator with virtual time and configurable scenarios.
-- Event schema with immutable provenance, event IDs, timestamps, amounts, currency, actor IDs, and status.
-- PayPal sandbox order and capture flow, verified webhook ingestion, idempotency, and event correlation.
-- Rules-only, AI-assisted, and hybrid detectors with comparable scoring outputs.
-- Held-out benchmark evaluation: precision, recall, F1, false-positive rate, confusion matrices, and detection latency where meaningful.
-- Experiment history and audit trail in Supabase.
-- React dashboard with side-by-side model comparisons, scenario exploration, and individual event evidence.
-- Documented REST API and typed TypeScript SDK.
-- Reproducible demo, tests, deployment, and submission assets.
+## Evidence and safety
 
-## Out of scope, and why
+Synthetic evidence retains seeded virtual time and immutable source: synthetic. Verified sandbox evidence retains source: paypal_sandbox, provider IDs and verification metadata: it is a test purchase, not verified gambling. Protection category is separate trusted integration configuration, never rewritten provider provenance. Source-specific views and ledger namespaces prevent pooled synthetic/sandbox totals. Real-world ingestion is outside scope; no real-world data is currently available or assumed.
 
-- Real-money gambling, casino wallets, player deposits, payouts, or slot outcome manipulation: inappropriate for a sandbox research tool and introduces licensing and fairness risks.
-- Automatic denial, freezing, or punitive action on a real person's payment: model outputs are research signals, not financial decisions.
-- Claims of detecting real-world gambling harm or fraud: synthetic benchmarks cannot establish external validity.
-- Ingesting real personal financial histories: no access, consent, or necessity for the MVP.
-- Production multi-merchant onboarding, marketplace payouts, live PayPal processing: outside the hackathon MVP.
-- PYUSD, Solana, Elastic, and AG Grid as mandatory dependencies: only add after the core system is validated.
-- An LLM inventing ground-truth labels or selecting the test scenarios it later evaluates: causes evaluation leakage.
+Labels, generator metadata and scenario names remain evaluation-only. AI receives a minimal observable projection and evidence IDs, never labels, identity, credentials or full provider payloads. It can explain observations and suggest voluntary action; it cannot modify policy, labels, reservations or payments. Model failure leaves policies in force and warnings visibly unavailable.
 
-## Core event and evaluation contracts
+Money uses bounded safe integer minor units on the wire and checked integer arithmetic/storage. USD only; no FX, net-loss inference, payouts or automatic refunds. Reservations allocate internal budget, not funds or escrow.
 
-Events distinguish `source: synthetic | paypal_sandbox`, `eventType`, `eventId`, `occurredAt`, `actorId`, `amountMinor`, `currency`, `status`, and provenance details. Synthetic events may carry scenario labels in a separate evaluation-only store. PayPal events must have provider identifiers and verification status. Unverified provider events never become trusted payment facts.
+## Delivery gate
 
-Detectors receive the same observable feature set, without ground truth or scenario names. Every detector returns score, decision, evidence event IDs, and model/rules version. Evaluation is done only after scoring, with a held-out test set and fixed thresholds. Report sample counts and uncertainty, not just percentages.
-
-## Where this can go wrong
-
-- Artificially easy synthetic anomalies produce misleadingly strong model scores. Include subtle and overlapping scenarios, hold out scenario variants, and publish limitations.
-- AI may be slow, expensive, inconsistent, or fail to beat rules. Use a small bounded inference budget, record versions, and treat failures as measured outcomes.
-- PayPal sandbox and simulator may be conflated. Enforce provenance in types, storage, API, and UI.
-- Capture and webhook may both report the same payment. Correlate and deduplicate; never double-count.
-- A plausible dashboard can hide broken math. Verify metrics with hand-computed fixtures and seeded reruns.
-
-## Interface
-
-A restrained developer research tool. Experiment setup and run status on the left; comparative metrics and charts in the center; event evidence and provenance on the right. Every displayed metric has a denominator and a way to inspect underlying examples. No animated gambling imagery, casino branding, or claims of guaranteed AI superiority.
-
-## What must be true before submission
-
-A seed reproduces the same dataset; labels never reach inference; baseline and AI use the same test events; metrics agree with hand-worked examples; a real PayPal sandbox capture is verifiable server-side; webhooks are authenticated and deduplicated; simulated and sandbox events are distinguishable everywhere; the SDK drives the real API; a second developer can run the project using documentation; no secrets are committed.
+Documentation only in this task. Wait for approval of the proposal and its explicit MVP defaults before implementing Phase 5. Implement one accepted-scope phase at a time; run typecheck, lint, build and relevant tests; report manual checks and stop for acceptance. Existing pending evidence must be reviewed without implicitly initiating payment or deployment.
