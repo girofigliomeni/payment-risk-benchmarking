@@ -1,6 +1,6 @@
 ﻿# Responsible Gambling Payment Protection
 
-Status: documentation proposal, 2026-10-27. Phases 5–12 are unimplemented and require phase-by-phase approval. Repository/package identifiers remain unchanged.
+Status, 2026-10-27: Phase 5 was explicitly authorized and implemented; local automated verification is complete and human acceptance remains pending. Phases 6–12 remain unimplemented proposals requiring phase-by-phase approval. Repository/package identifiers remain unchanged.
 
 ## Objective
 
@@ -14,7 +14,7 @@ Success is demonstrable policy correctness and evidence-linked warnings on expli
 
 Phases [1](specs/phase-01.md), [2](specs/phase-02.md), [3](specs/phase-03.md) and [4](specs/phase-04.md), their implementations, tests and migrations remain unchanged. The pivot treats them as the completed foundation; existing records still contain pending human checks. This proposal does not resolve those checks or retroactively certify acceptance. Preserve [rules/storage evidence](rules-storage.md), [sandbox setup and evidence](paypal-sandbox.md), and README historical verification sections.
 
-Current architecture: React/Vite apps/dashboard shows health, synthetic sample evidence and checkout; Express apps/api mounts health, sandbox and owned experiment routes; packages/core holds Zod contracts and pure rules-v1; packages/simulator generates deterministic local files; packages/sdk exports types only. Supabase experiment storage is server-mediated with restricted evaluation labels. Checkout sessions, locks and webhook deduplication are process-local, **not durable protection enforcement**.
+Current architecture: React/Vite apps/dashboard shows health, synthetic sample evidence and checkout; Express apps/api mounts health, sandbox and owned experiment routes; packages/core holds Zod contracts, pure rules-v1 and the separate pure protection-policy-v1 engine; packages/simulator generates deterministic local files; packages/sdk exports types only. Supabase experiment storage is server-mediated with restricted evaluation labels. Checkout sessions, locks and webhook deduplication are process-local, **not durable protection enforcement**.
 
 The [history index](history/README.md) preserves the previous objective and superseded future phases. Keep rules-v1 thresholds, outputs, labels and experiment records unchanged. Its flag/pass result remains a research signal. The separate protection-policy-v1 engine evaluates consent, budgets and cooling-off; the behavioral warning service remains advisory. Separate types, versions, storage and UI prevent interchange.
 
@@ -39,4 +39,4 @@ Money uses bounded safe integer minor units on the wire and checked integer arit
 
 ## Delivery gate
 
-Documentation only in this task. Wait for approval of the proposal and its explicit MVP defaults before implementing Phase 5. Implement one accepted-scope phase at a time; run typecheck, lint, build and relevant tests; report manual checks and stop for acceptance. Existing pending evidence must be reviewed without implicitly initiating payment or deployment.
+Phase 5 implementation and local automated verification are complete; see the [Phase 5 specification](specs/phase-05.md) and [policy verification record](protection-policy-v1.md). Human acceptance remains pending. Wait for that acceptance and explicit Phase 6 approval before proceeding. Implement one accepted-scope phase at a time; run typecheck, lint, build and relevant tests; report manual checks and stop for acceptance. Existing pending evidence must be reviewed without implicitly initiating payment or deployment.

@@ -6,7 +6,7 @@ An opt-in consumer dashboard and developer enforcement API/SDK built on the pres
 
 Spec-driven. Before implementation read this file, relevant product sections and only the current docs/specs/phase-NN.md. The documentation pivot reads all phases by explicit request. Preserve Phases 1–4 source, migrations, tests and historical acceptance evidence. Never infer acceptance from code or erase pending checks. docs/history contains superseded plans, not current instructions.
 
-Phases 5–12 are proposals, not implemented or authorized. Wait for user approval before Phase 5. Implement only the approved phase, then stop for user acceptance before the next. Prewritten future specs are planning artifacts, not authorization. Inspect specs and git log when resuming.
+Phase 5 was explicitly authorized and implemented; local automated verification is complete and human acceptance remains pending. Phases 6–12 are proposals, not implemented or authorized. Wait for Phase 5 human acceptance and explicit Phase 6 approval before proceeding. Implement only the approved phase, then stop for user acceptance before the next. Prewritten future specs are planning artifacts, not authorization. Inspect specs and git log when resuming.
 
 If a genuine ambiguity blocks implementation, ask one specific question with a recommended answer and reason, then stop. Never invent secrets, accounts, webhook payloads, payment results, metrics or deployment URLs. Documentation work does not authorize external payments, account configuration or deployments.
 

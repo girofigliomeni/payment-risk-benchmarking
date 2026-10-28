@@ -1,6 +1,6 @@
 ﻿# Phase 5: Deterministic protection contracts and policy engine
 
-Status: proposed, unimplemented. Requires explicit approval of the documentation pivot before implementation. Build only this phase, then stop.
+Status: implemented with explicit user authorization; local automated verification complete, human acceptance pending. No following-phase implementation is authorized.
 
 Implementation update, 2026-10-27: the user explicitly authorized Phase 5. Core implementation and local automated verification are complete; human acceptance remains pending. See [policy semantics and verification record](../protection-policy-v1.md). The original proposal below is retained; no following-phase work has begun.
 
