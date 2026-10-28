@@ -9,3 +9,5 @@ coverage/
 artifacts/
 
 .tools/
+supabase/.temp/
+supabase/.branches/

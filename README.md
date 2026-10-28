@@ -12,6 +12,8 @@ The following content is retained verbatim as historical Phase 1–4 setup and v
 
 # Payment Risk Lab
 
+Phase 4 adds the deterministic rules baseline, authorized experiment API, server-only Supabase persistence and saved-experiment CLI. See [rules, database setup and acceptance](docs/rules-storage.md). Hosted Supabase and browser acceptance require user configuration; local test results do not establish real-world detection performance.
+
 A developer research workspace for reproducible payment-risk experiments. Phase 1 provides the monorepo foundation, shared validated contracts, API health, and a dashboard with explicitly synthetic sample data. Phase 2 adds a standalone, local synthetic simulator. The simulator executes no actual payments. Phase 3 adds a separate, explicitly authorized PayPal sandbox test checkout; see the setup guide below.
 
 ## Local setup
