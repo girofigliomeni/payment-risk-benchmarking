@@ -1,6 +1,6 @@
 ﻿# Architecture and data model proposal
 
-Status: unimplemented design. No SQL, application changes or infrastructure changes are authorized by this document.
+Status: shared design; Phase 5 and Phase 6 were separately approved and implemented locally. Phase 6 adds consent/policy/link persistence and authentication only; see [implementation boundaries and verification](phase06-storage.md). Payment/accounting/worker entities below remain future design. This document alone authorizes no infrastructure changes.
 
 ## Existing versus proposed structure
 

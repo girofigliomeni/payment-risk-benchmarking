@@ -1,6 +1,6 @@
 # Phase 5 policy semantics
 
-Implemented locally for Phase 5; human acceptance remains pending. This reference does not certify the preserved Phase 1–4 pending checks. No database, checkout, SDK client, dashboard or AI behavior is added.
+Implemented locally for Phase 5; accepted by the user on 2026-10-27. This reference does not certify the preserved Phase 1–4 pending checks. No database, checkout, SDK client, dashboard or AI behavior is added by Phase 5.
 
 ## Contracts and authority
 
@@ -61,4 +61,4 @@ Implemented by Codex at the user's explicit Phase 5 request. `npm run typecheck`
 
 The optional existing `npm run test:storage` could not start: `PHASE4_PGLITE_MODULE` is unset. To rerun that local verifier, set this shell variable to the absolute entrypoint of an installed `@electric-sql/pglite` package, then run the command. No SQL, hosted account or infrastructure was changed. This limitation does not establish or invalidate historical hosted acceptance; its pending checks remain unchanged.
 
-Human acceptance remains: review the examples above and approve the rolling windows, 24-hour relaxation delay, gross-spend accounting and revocation semantics. No Phase 6 implementation is authorized by this record.
+The user accepted the examples, rolling windows, 24-hour relaxation delay, gross-spend accounting and revocation semantics on 2026-10-27 by replying “I accept” to the explicit acceptance question. Phase 6 was separately authorized by the user's implementation request. This acceptance does not resolve historical Phase 1–4 checks or establish hosted/browser verification.
