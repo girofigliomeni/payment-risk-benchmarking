@@ -1,3 +1,4 @@
 export * from './contracts.js';
 export * from './rules.js';
 export * from './protection.js';
+export * from './protection-storage.js';

@@ -1,8 +1,8 @@
 ﻿# Phase 5: Deterministic protection contracts and policy engine
 
-Status: implemented with explicit user authorization; local automated verification complete, human acceptance pending. No following-phase implementation is authorized.
+Status: implemented with explicit user authorization; local automated verification complete. The user accepted Phase 5 on 2026-10-27 and explicitly authorized Phase 6 separately. Phases 7–12 remain unauthorized.
 
-Implementation update, 2026-10-27: the user explicitly authorized Phase 5. Core implementation and local automated verification are complete; human acceptance remains pending. See [policy semantics and verification record](../protection-policy-v1.md). The original proposal below is retained; no following-phase work has begun.
+Implementation update, 2026-10-27: the user explicitly authorized Phase 5. Core implementation and local automated verification are complete. The user subsequently accepted the documented rolling windows, 24-hour relaxation delay, gross-spend accounting and revocation semantics by replying “I accept” to the acceptance question. See [policy semantics and verification record](../protection-policy-v1.md). The original proposal below is retained; Phase 6 is separately authorized, with its status recorded in its own specification.
 
 ## Goal
 

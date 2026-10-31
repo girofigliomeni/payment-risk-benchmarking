@@ -1,12 +1,12 @@
 ﻿# Consumer dashboard and policy specification
 
-Status: unimplemented. Defaults below are proposed product choices requiring proposal approval, not clinical or legal recommendations.
+Status: dashboard UI remains unimplemented. Phase 5 policy semantics were accepted and Phase 6 consent/persistence/authentication was approved and implemented locally on 2026-10-27; see [Phase 6](phase06-storage.md). Remaining UI and future-phase behavior below is proposed, not clinical or legal guidance.
 
 ## Enrollment and consent
 
 Use authenticated Supabase accounts and fictional demo identities. Before opt-in explain participating-flow coverage and missing external activity. No automatic gambling classification from PayPal; a trusted integration config assigns protection scope while the underlying payment remains a generic sandbox purchase.
 
-Enrollment requires an unchecked consent control, current terms version, explicit USD limits for both windows and confirmation. Record user, purpose, terms version, server timestamp and coverage. Separate unchecked AI consent permits minimal summaries to the model provider; withdrawal immediately stops optional inference without weakening deterministic protection. No marketing or merchant access to warning history. Require recent authentication for consent/policy changes; protect cookie-authenticated mutations against CSRF and validate origins.
+Enrollment requires an unchecked consent control, current terms version, explicit USD limits for both windows and confirmation. Record user, purpose, terms version, server timestamp and coverage. Separate unchecked AI consent permits minimal summaries to the model provider; withdrawal immediately stops optional inference without weakening deterministic protection. No marketing or merchant access to warning history. The approved Phase 6 contract requires original sign-in age < 24 hours for protected API access; sensitive grants, re-enrollment, increases, link approval and privacy requests require < 15 minutes. Tightening, cooling-off, cancellation and revocation remain available under normal authorized access. Refresh does not renew either age; the backend verifies the original session timestamp. Phase 6 uses explicit bearer authentication, accepts no authentication cookies, and validates supplied origins. Protect any future cookie-authenticated mutations against CSRF.
 
 Protection-consent revocation immediately stops new reservations and capture authorization, optional AI and new collection except necessary reconciliation/security records. Cancel unsent checkouts; reconcile in-flight operations. Revocation cannot recall a dispatched provider request. No silent unprotected fallback. Re-enrollment on a retained account preserves budgets, active cooling-off and pending delays. Cross-account evasion is an acknowledged limitation.
 

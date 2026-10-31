@@ -1,12 +1,12 @@
 ﻿# Backend API and developer SDK proposal
 
-Status: unimplemented. Paths and method names below are target contracts, not current routes. Preserve existing /experiments and /sandbox research contracts; protection uses /v1. Deliver OpenAPI 3.1 plus generated/validated shared schemas and a real HTTP SDK in Phase 9.
+Status: the Phase 6 consent/policy/link/lifecycle subset is implemented locally; its exact routes and setup are in [Phase 6 storage](phase06-storage.md). Remaining paths and SDK methods below are target contracts. Preserve existing /experiments and /sandbox research contracts; protection uses /v1. Deliver OpenAPI 3.1 plus generated/validated shared schemas and a real HTTP SDK in Phase 9.
 
 ## Authentication and authorization
 
 Consumer methods use verified Supabase user tokens and derive owner server-side. Integrator methods use rotated, revocable, hashed-at-rest server credentials with per-integration scopes. Never expose those credentials in browser SDK builds. An approved link maps the merchant's pseudonymous subject reference to an authenticated consenting consumer; a supplied owner UUID alone is not authority. One integration cannot read another's quotes, intents or links. Return only necessary eligibility reason, policy version and checkout status to integrators, never warning/history/other-merchant details.
 
-MVP supports operator-provisioned sandbox integrations only. Consumer sign-in, token refresh and recent-auth requirements are specified before implementation; no new auth provider is assumed. An integrator cannot enroll users, increase their limits, revoke consent or initiate capture without recorded consumer confirmation.
+MVP supports operator-provisioned sandbox integrations only. Approved Phase 6 consumer auth uses existing Supabase email/password sign-in, original session age < 24 hours and recent auth < 15 minutes for sensitive grants/increases. Refresh does not renew age. Tightening, cancellation, cooling-off and revocation require normal authorized access. Original auth time is verified against auth.sessions.created_at for the verified token's session_id/owner; unavailable timestamps require fresh sign-in. This approved contract refines the proposed table's generic recent-auth labels. An integrator cannot enroll users, increase their limits, revoke consent or initiate capture without recorded consumer confirmation.
 
 ## Proposed endpoints
 

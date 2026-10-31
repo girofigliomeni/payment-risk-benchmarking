@@ -1,6 +1,18 @@
-﻿# Phase 6: Consent, policy persistence and authorization
+# Phase 6: Consent, policy persistence and authorization
 
-Status: proposed, unimplemented. Requires user acceptance of Phase 5 before implementation. Build only this phase, then stop.
+Status, 2026-10-30: **ACCEPTED — BACKEND/STORAGE SCOPE ONLY**. The user reported explicit human reviewer approval based on 114 hosted checks with zero failures, 36 focused local tests, 86 storage assertions and preserved historical research data/security permissions. Phase 6 was authorized on 2026-10-27; migration 20261028022432 remains deployed to ymsbiagwhgxultjoryzf. See [deployment evidence](../phase06-hosted-deployment.md) and [scoped human acceptance](../phase06-human-acceptance.md). This closes the implemented milestone only, not production readiness. Phase 7 is not authorized; stop before implementing it or merging.
+
+Explicitly deferred, **NOT VERIFIED**: real hosted 24-hour authentication rejection; real elapsed-time delayed activation; real elapsed-time export expiry and exact deadline/duration assertions; interactive Phase 6 consumer UI testing; production retention and final-erasure lifecycle. These are not PASS and are not erased by scoped acceptance. Existing local coverage and all earlier dated acceptance evidence below remain separately attributed.
+
+Implementation record: see [consent/storage setup, contracts, retention and verification](../phase06-storage.md). The approved scope below is retained.
+
+Hosted acceptance attempt, 2026-10-27: the user authorized controlled fictional acceptance testing. Live private-schema/API permission and historical-preservation checks passed; Auth-dependent testing stopped because email confirmation is required and dedicated verified fictional credentials are unavailable. No identities or protection acceptance records were created. See [criterion matrix and blocker](../phase06-hosted-acceptance.md). Human acceptance remains pending.
+
+Hosted resume, 2026-10-30: credentials for the two existing confirmed users became available. The real hosted API/Auth acceptance run passed 106 main assertions and 8 follow-up checks, including actual 15-minute expiry, with zero failures and preserved historical data/grants. Synthetic test state is retained; no additional users were created. The actual 24-hour authentication-age boundary, delayed activation/export expiry, interactive browser and human acceptance remain unverified. See the latest matrix in the linked acceptance evidence; do not start Phase 7.
+
+Human sign-off preparation: [review report](../phase06-human-acceptance.md) confirms that no Phase 6 consumer UI exists to browser-smoke-test and distinguishes exact pure-engine timing coverage from controlled local timestamp fixtures and unobserved hosted timers. The subsequent explicit reviewer decision accepted only the backend/storage scope; the earlier statements of pending acceptance describe their dated test runs.
+
+Approved authentication contract: existing Supabase email/password sign-in; backend-verified original authentication age strictly below 24 hours for protected API access and below 15 minutes for sensitive grants/increases. Refresh never resets either clock. The backend verifies the token with Supabase Auth, then uses its session_id and authenticated owner to look up auth.sessions.created_at; missing/unverifiable timestamps require fresh authentication. Protective tightening, cooling-off activation/extension, cancellation and revocation need normal authorized access only. Session changes never reset protection state. This explicit user decision refines the linked proposals' blanket recent-auth wording.
 
 ## Goal
 
